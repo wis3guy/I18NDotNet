@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace I18N.Address.Validation
 {
-	public interface IAddressValidationResult : IEnumerable<IAddressFieldValidationResult>
+	public interface IAddressValidationResult : IEnumerable<IAddressFieldValidationFailure>
 	{
 		bool IsValid { get; }
 	}

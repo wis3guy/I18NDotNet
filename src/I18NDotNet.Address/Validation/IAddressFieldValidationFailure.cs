@@ -1,8 +1,7 @@
 ﻿namespace I18N.Address.Validation
 {
-	public interface IAddressFieldValidationResult
+	public interface IAddressFieldValidationFailure
 	{
-		bool IsValid { get; }
 		AddressFieldKey Key { get; }
 		ValidationFailureReason Reason { get; }
 	}

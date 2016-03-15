@@ -23,11 +23,14 @@ namespace I18NDotNet.Tests.Address
 
 			using (var sut = await factory.CreateAsync())
 			{
+				Assert.NotNull(sut.Countries);
+				Assert.NotNull(sut.Defaults);
+
 				var support = sut.SupportsCountry(country);
 
 				Assert.True(support);
 
-				var response = await sut.GetAddressDataAsync(country);
+				var response = await sut.GetAddressDataAsync(new AddressDataKey(country));
 
 				Assert.NotNull(response);
 

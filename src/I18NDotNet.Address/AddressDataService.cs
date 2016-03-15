@@ -1,37 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace I18N.Address
 {
-	internal class AddressDataService : GoogleI18NService, IAddressDataService
+	internal class AddressDataService : GoogleI18NServiceBase, IAddressDataService
 	{
-		private HashSet<string> _countries;
-		private AddressDataResponse _defaults;
-
-		public async Task InitializeAsync()
+		private AddressDataService()
 		{
-			var response = await GetTypedResponse<DataResponse>("address/data");
-
-			_countries = new HashSet<string>(response.Countries.Split('~'));
-			_defaults = await GetTypedResponse<AddressDataResponse>("address/data/ZZ");
+			// avoid direct creation and enforce factory(method) usage ...
 		}
 
-		public async Task<AddressDataResponse> GetAddressDataAsync(Country country)
+		public static AddressDataService Create(HashSet<string> countries, Dictionary<string, string> defaults)
 		{
-			if (!SupportsCountry(country))
-				throw new ArgumentException($"Unknown country code: {country.Code}", nameof(country));
+			return new AddressDataService
+			{
+				Countries = countries,
+				Defaults = defaults
+			};
+		}
 
-			var response = await GetTypedResponse<AddressDataResponse>($"address/data/{country.Code}");
+		public static async Task<AddressDataService> CreateAndInitializeAsync()
+		{
+			var service = new AddressDataService();
 
-			response.ApplyDefaults(_defaults);
+			var response = await service.GetTypedResponse<Dictionary<string, string>>("address/data");
 
-			return response;
+			service.Countries = new HashSet<string>(response["countries"].Split('~'));
+			service.Defaults = await service.GetTypedResponse<Dictionary<string, string>>("address/data/ZZ");
+
+			return service;
+		}
+
+		public HashSet<string> Countries { get; private set; }
+		public Dictionary<string, string> Defaults { get; private set; }
+
+		public async Task<Dictionary<string, string>> GetAddressDataAsync(AddressDataKey key)
+		{
+			var path = $"address/data/{key}";
+			return await GetTypedResponse<Dictionary<string, string>>(path);
 		}
 
 		public bool SupportsCountry(Country country)
 		{
-			return _countries.Contains(country.Code);
+			return Countries.Contains(country.Code);
 		}
 	}
 }

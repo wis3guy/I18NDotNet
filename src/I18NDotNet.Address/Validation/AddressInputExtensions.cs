@@ -6,6 +6,11 @@ namespace I18N.Address.Validation
 {
 	internal static class AddressInputExtensions
 	{
+		public static string GetCleanCountryCodeValue(this AddressModel address)
+		{
+			return GetCleanValue(address.Country.Code);
+		}
+
 		public static string[] GetCleanValue(this AddressModel address, AddressFieldKey key)
 		{
 			return GetCleanValue(GetValue(address, key)).ToArray();
@@ -13,21 +18,23 @@ namespace I18N.Address.Validation
 
 		private static IEnumerable<string> GetCleanValue(IEnumerable<string> result)
 		{
-			foreach (var value in result)
+			return result.Select(GetCleanValue);
+		}
+
+		private static string GetCleanValue(string value)
+		{
+			if (value == null)
 			{
-				if (value == null)
-				{
-					yield return null;
-				}
-				else
-				{
-					var cleaned = value.Trim();
+				return null;
+			}
+			else
+			{
+				var cleaned = value.Trim();
 
-					if (string.IsNullOrEmpty(cleaned))
-						yield return null;
+				if (string.IsNullOrEmpty(cleaned))
+					return null;
 
-					yield return cleaned;
-				}
+				return cleaned;
 			}
 		}
 

@@ -10,5 +10,9 @@ namespace I18N.Address
 		S, // Administrative area such as a state, province, island etc
 		Z, // Zip or postal code
 		X, // Sorting code
+
+		Country
 	}
+
+	
 }

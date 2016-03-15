@@ -1,14 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace I18N.Address.Validation
 {
-	internal class AddressValidationResult : List<IAddressFieldValidationResult>, IAddressValidationResult
+	internal class AddressValidationResult : List<IAddressFieldValidationFailure>, IAddressValidationResult
 	{
-		public AddressValidationResult(IEnumerable<AddressFieldValidationResult> collection):base(collection)
-		{
-		}
-
-		public bool IsValid => this.All(x => x.IsValid);
+		public bool IsValid => Count == 0;
 	}
 }

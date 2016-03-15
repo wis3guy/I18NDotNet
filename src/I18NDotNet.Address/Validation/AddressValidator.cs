@@ -1,48 +1,103 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace I18N.Address.Validation
 {
 	internal class AddressValidator
 	{
-		private readonly AddressDataResponse _addressData;
+		private readonly IAddressDataService _addressDataService;
+		private readonly AddressFieldKey[] _allKeys;
 
-		public AddressValidator(AddressDataResponse addressData)
+		public AddressValidator(IAddressDataService addressDataService)
 		{
-			if (addressData == null)
-				throw new ArgumentNullException(nameof(addressData));
+			if (addressDataService == null)
+				throw new ArgumentNullException(nameof(addressDataService));
 
-			_addressData = addressData;
+			_addressDataService = addressDataService;
+			_allKeys = Enum.GetValues(typeof(AddressFieldKey)).Cast<AddressFieldKey>().ToArray();
 		}
 
-		public IAddressValidationResult Validate(AddressModel model)
+		public async Task<IAddressValidationResult> ValidateAsync(AddressModel model)
 		{
-			var required = _addressData.Require
-				.ToCharArray()
-				.Select(x => (AddressFieldKey) Enum.Parse(typeof (AddressFieldKey), x.ToString()))
-				.ToArray();
+			var result = new AddressValidationResult();
+			var data = _addressDataService.Defaults;
+			
+			if (!_addressDataService.SupportsCountry(model.Country))
+				result.Add(new AddressFieldValidationFailure(AddressFieldKey.Country, ValidationFailureReason.Uknown));
 
-			var result = Enum.GetValues(typeof (AddressFieldKey))
-				.Cast<AddressFieldKey>()
-				.Select(key => ValidateField(key, required, model.GetCleanValue(key)));
+			var dataKey = new AddressDataKey(model.Country);
 
-			return new AddressValidationResult(result);
-		}
+			if (model.Language.HasValue)
+				dataKey.SetLanguage(model.Language.Value);
 
-		private AddressFieldValidationResult ValidateField(AddressFieldKey key, AddressFieldKey[] required, string[] value)
-		{
-			var result = new AddressFieldValidationResult(key);
+			data.Override(await _addressDataService.GetAddressDataAsync(dataKey));
 
-			if (required.Any(x => x == key) && value.Any(x => x == null))
-				result.Reason = ValidationFailureReason.Required; // required but null
+			var administrativeArea = model.GetCleanValue(AddressFieldKey.S).Single();
 
-			if ((key == AddressFieldKey.Z) && (_addressData.ZipRegex != null))
+			if ((administrativeArea != null) && (data["sub_keys"] != null))
 			{
-				var regex = new Regex(_addressData.ZipRegex);
+				// todo: assert valid administrative value
+				dataKey.SetAdministrativeArea(administrativeArea);
+			}
 
-				if (!regex.IsMatch(value.Single()))
-					result.Reason = ValidationFailureReason.InvalidFormat; // regex mismatch
+			if (!result.Any())
+			{
+				data.Override(await _addressDataService.GetAddressDataAsync(dataKey));
+
+				var locality = model.GetCleanValue(AddressFieldKey.C).Single();
+
+				if ((locality != null) && (data["sub_keys"] != null))
+				{
+					// todo: assert valid locality
+				}
+
+				dataKey.SetLocality(locality);
+			}
+
+			if (!result.Any())
+			{
+				data.Override(await _addressDataService.GetAddressDataAsync(dataKey));
+
+				var dependentLocality = model.GetCleanValue(AddressFieldKey.D).Single();
+
+				if ((dependentLocality != null) && (data["sub_keys"] != null))
+				{
+					// todo: assert valid dependent locality
+				}
+
+				dataKey.SetDependentLocality(dependentLocality);
+			}
+
+			if (!result.Any())
+				data.Override(await _addressDataService.GetAddressDataAsync(dataKey));
+
+			//
+			// Required fields
+
+			result.AddRange(_allKeys
+				.Where(x => data["require"].Contains($"{x}"))
+				.Where(x => model.GetCleanValue(x) == null)
+				.Select(key => new AddressFieldValidationFailure(key, ValidationFailureReason.Required)));
+
+			//
+			// Only expected fields
+
+			result.AddRange(_allKeys
+				.Where(x => !data["fmt"].Contains($"%{x}"))
+				.Where(key => model.GetCleanValue(key) != null)
+				.Select(key => new AddressFieldValidationFailure(key, ValidationFailureReason.Unexpected)));
+
+			//
+			// zip regex
+
+			if (data["zip"] != null)
+			{
+				var regex = new Regex(data["zip"]);
+
+				if (!regex.IsMatch(model.GetCleanValue(AddressFieldKey.Z).Single()))
+					result.Add(new AddressFieldValidationFailure(AddressFieldKey.Z, ValidationFailureReason.Invalid));
 			}
 
 			return result;

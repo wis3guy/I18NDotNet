@@ -6,7 +6,7 @@ namespace I18N.Address.Form
 {
 	internal class AddressSpec : List<AddressField>, IAddressSpec
 	{
-		public AddressSpec(AddressDataResponse response)
+		public AddressSpec()
 		{
 			throw new NotImplementedException();
 		}

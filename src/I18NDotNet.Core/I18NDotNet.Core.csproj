@@ -41,7 +41,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Country.cs" />
-    <Compile Include="GoogleI18NService.cs" />
+    <Compile Include="GoogleI18NServiceBase.cs" />
+    <Compile Include="Language.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

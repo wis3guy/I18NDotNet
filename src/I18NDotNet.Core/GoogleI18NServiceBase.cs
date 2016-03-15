@@ -5,13 +5,13 @@ using Newtonsoft.Json;
 
 namespace I18N
 {
-	public abstract class GoogleI18NService : IDisposable
+	public abstract class GoogleI18NServiceBase : IDisposable
 	{
 		private const string BaseUri = "http://i18napis.appspot.com";
 
 		private HttpClient _httpClient;
 
-		protected GoogleI18NService()
+		protected GoogleI18NServiceBase()
 		{
 			_httpClient = new HttpClient
 			{
