@@ -1,2 +1,2 @@
 #I18NDotNet
-An internationalisation library for .NET, using Google's freely available http://i18napis.appspot.com
+A set of internationalisation libraries for .NET, making use of Google's http://i18napis.appspot.com.
