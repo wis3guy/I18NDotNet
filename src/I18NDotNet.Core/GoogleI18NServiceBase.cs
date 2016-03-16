@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -19,14 +20,15 @@ namespace I18N
 			};
 		}
 
-		protected async Task<T> GetTypedResponse<T>(string path)
+		protected async Task<Dictionary<string, string>> GetJsonResponseAsDictionary(string path)
 		{
 			var response = await _httpClient.GetAsync(path);
 
 			response.EnsureSuccessStatusCode();
 
 			var json = await response.Content.ReadAsStringAsync();
-			var typed = JsonConvert.DeserializeObject<T>(json);
+			var typed = JsonConvert.DeserializeObject<Dictionary<string, string>>(json);
+
 			return typed;
 		}
 
