@@ -23,5 +23,10 @@ namespace I18N.Address
 		{
 			return Constants.ContainsKey(country.Code);
 		}
+
+		internal AddressData GetCountryDefaults(Country country)
+		{
+			return Constants[country.Code];
+		}
 	}
 }

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace I18N
 {
 	/// <summary>
-	/// Representation of a BCP47 language tag
-	/// See: https://tools.ietf.org/html/bcp47
+	/// Representation of a language
 	/// </summary>
 	public struct Language
 	{
@@ -118,28 +116,22 @@ namespace I18N
 )
 $");
 
-		private static string[] NonLatinLanguages = {"ar", "hy", "zh", "ja", "ko", "ru", "th", "uk", "vi"};
-
 		public Language(string code)
 		{
 			if (code == null)
 				throw new ArgumentNullException(nameof(code));
 
-			if (!BCP47Regex.IsMatch(code))
-				throw new ArgumentException("Supplied code is not a valid BCP47 language tag");
+			var match = BCP47Regex.Match(code);
 
-			Code = code;
+			if (!match.Success)
+				throw new ArgumentException("Supplied language code is not a well-formed BCP47 (https://tools.ietf.org/html/bcp47) language tag");
 
-			if (NonLatinLanguages.Contains(code))
-				Latin = false;
-			
+			Code = match.Groups["language"].Value;
 
-			// TODO
+			ForcedLatin = match.Groups["script"].Success && match.Groups["script"].Value == "Latn";
 		}
 
 		public string Code { get; }
-		public bool Latin { get; }
+		public bool ForcedLatin { get; }
 	}
-
-
 }

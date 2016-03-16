@@ -25,7 +25,7 @@ namespace I18N.Address.Validation
 
 			//
 			// Country
-
+			
 			if (!_addressDataService.SupportsCountry(model.Country))
 			{
 				result.Add(new AddressFieldValidationFailure(AddressFieldKey.Country, ValidationFailureReason.Uknown));
@@ -33,8 +33,7 @@ namespace I18N.Address.Validation
 			else
 			{
 				var dataKey = new AddressDataKeyBuilder(model.Country);
-
-				data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
+				data.Refine(_addressDataService.GetCountryDefaults(model.Country));
 
 				//
 				// Language

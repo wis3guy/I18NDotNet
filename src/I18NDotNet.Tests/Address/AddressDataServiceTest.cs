@@ -10,7 +10,6 @@ namespace I18NDotNet.Tests.Address
 		[Fact]
 	    public async void Foo()
 		{
-			var factory = new AddressDataServiceFactory();
 			var country = new Country("NL");
 
 			var address = new AddressModel(country)
@@ -21,7 +20,7 @@ namespace I18NDotNet.Tests.Address
 				City = "Koog aan de Zaan"
 			};
 
-			using (var sut = await factory.CreateAsync())
+			using (var sut = new AddressDataService())
 			{
 				var result = await sut.ValidateAsync(address);
 

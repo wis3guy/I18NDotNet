@@ -268,6 +268,8 @@ namespace I18N.Address
 			return _constants.ContainsKey(key);
 		}
 
+		// TODO: Avoid repeated deserialization by caching the address data object
+
 		public AddressData this[string key] => new AddressData(JsonConvert.DeserializeObject<Dictionary<string, string>>(_constants[key]));
 		
 		public IEnumerable<string> Keys => _constants.Keys;

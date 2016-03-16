@@ -9,13 +9,13 @@ namespace I18N.Address
 	{
 		public class PropertyNames
 		{
-			public const string SubRegionKeysPropertyName = "sub_keys";
-			public const string SubRegionLocalNamesPropertyName = "sub_lnames";
-			public const string SubRegionLatinNamesPropertyName = "sub_names";
-			public const string RequiredFieldsPropertyName = "require";
-			public const string CurrentLanguagePropertyName = "language";
-			public const string SupportedLanguagesPropertyName = "languages";
-			public const string FormatPropertyName = "fmt";
+			public const string SubRegionKeys = "sub_keys";
+			public const string SubRegionLocalNames = "sub_lnames";
+			public const string SubRegionLatinNames = "sub_names";
+			public const string RequiredFields = "require";
+			public const string CurrentLanguage = "lang";
+			public const string SupportedLanguages = "languages";
+			public const string Format = "fmt";
 		}
 
 		private const char ListItemDelimiter = '~';
@@ -67,28 +67,28 @@ namespace I18N.Address
 		{
 			var lowercase = input.ToLowerInvariant();
 
-			if (!_data.ContainsKey(PropertyNames.SubRegionKeysPropertyName))
+			if (!_data.ContainsKey(PropertyNames.SubRegionKeys))
 				return null;
 
-			var candidates = _data[PropertyNames.SubRegionKeysPropertyName].Split(ListItemDelimiter);
+			var candidates = _data[PropertyNames.SubRegionKeys].Split(ListItemDelimiter);
 			var match = candidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
 
 			if (match != null)
 				return match;
 
-			if (_data.ContainsKey(PropertyNames.SubRegionLocalNamesPropertyName))
+			if (_data.ContainsKey(PropertyNames.SubRegionLocalNames))
 			{
-				candidates = _data[PropertyNames.SubRegionLocalNamesPropertyName].Split(ListItemDelimiter);
+				candidates = _data[PropertyNames.SubRegionLocalNames].Split(ListItemDelimiter);
 				match = candidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
 
 				if (match != null)
 					return match;
 			}
 
-			if (!_data.ContainsKey(PropertyNames.SubRegionLatinNamesPropertyName))
+			if (!_data.ContainsKey(PropertyNames.SubRegionLatinNames))
 				return null;
 
-			candidates = _data[PropertyNames.SubRegionLatinNamesPropertyName].Split(ListItemDelimiter);
+			candidates = _data[PropertyNames.SubRegionLatinNames].Split(ListItemDelimiter);
 			match = candidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
 
 			return match;
@@ -96,28 +96,28 @@ namespace I18N.Address
 
 		public bool IsRequiredField(AddressFieldKey key)
 		{
-			return _data.ContainsKey(PropertyNames.RequiredFieldsPropertyName) && _data[PropertyNames.RequiredFieldsPropertyName].Contains($"{key}");
+			return _data.ContainsKey(PropertyNames.RequiredFields) && _data[PropertyNames.RequiredFields].Contains($"{key}");
 		}
 
 		public bool IsExpectedField(AddressFieldKey key)
 		{
-			return _data.ContainsKey(PropertyNames.FormatPropertyName) && _data[PropertyNames.FormatPropertyName].Contains($"%{key}");
+			return _data.ContainsKey(PropertyNames.Format) && _data[PropertyNames.Format].Contains($"%{key}");
 		}
 
 		public bool IsSupportedLanguage(Language language)
 		{
-			if (_data.ContainsKey(PropertyNames.CurrentLanguagePropertyName))
+			if (_data.ContainsKey(PropertyNames.CurrentLanguage))
 			{
-				var current = _data[PropertyNames.CurrentLanguagePropertyName];
+				var current = _data[PropertyNames.CurrentLanguage];
 
 				if (current != null)
 					return current == language.Code;
 			}
 
-			if (!_data.ContainsKey(PropertyNames.SupportedLanguagesPropertyName))
+			if (!_data.ContainsKey(PropertyNames.SupportedLanguages))
 				return false;
 
-			var supported = _data[PropertyNames.SupportedLanguagesPropertyName].Split(ListItemDelimiter);
+			var supported = _data[PropertyNames.SupportedLanguages].Split(ListItemDelimiter);
 
 			return supported.Any(x => x == language.Code);
 		}
