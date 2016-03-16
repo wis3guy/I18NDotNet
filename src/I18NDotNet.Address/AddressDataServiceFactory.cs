@@ -10,7 +10,7 @@ namespace I18N.Address
 		private HashSet<string> _countries;
 		private AddressData _defaults;
 
-		public async Task<IAddressDataService> CreateAsync()
+		public async Task<AddressDataService> CreateAsync()
 		{
 			AddressDataService service;
 

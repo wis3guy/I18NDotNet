@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace I18N.Address
 {
-	internal class AddressDataService : GoogleI18NServiceBase, IAddressDataService
+	public sealed class AddressDataService : GoogleI18NServiceBase
 	{
 		private const string BasePath = "address/data";
 		private const string DefaultsKey = "ZZ";
@@ -13,7 +13,7 @@ namespace I18N.Address
 			// avoid direct creation and enforce factory(method) usage ...
 		}
 
-		public static AddressDataService Create(HashSet<string> countries, AddressData defaults)
+		internal static AddressDataService Create(HashSet<string> countries, AddressData defaults)
 		{
 			return new AddressDataService
 			{
@@ -22,7 +22,7 @@ namespace I18N.Address
 			};
 		}
 
-		public static async Task<AddressDataService> CreateAndInitializeAsync()
+		internal static async Task<AddressDataService> CreateAndInitializeAsync()
 		{
 			var service = new AddressDataService();
 
@@ -34,10 +34,10 @@ namespace I18N.Address
 			return service;
 		}
 
-		public HashSet<string> Countries { get; private set; }
-		public AddressData Defaults { get; private set; }
+		internal HashSet<string> Countries { get; private set; }
+		internal AddressData Defaults { get; private set; }
 
-		public async Task<AddressData> GetAddressDataAsync(AddressDataKeyBuilder builder)
+		internal async Task<AddressData> GetAddressDataAsync(AddressDataKeyBuilder builder)
 		{
 			var path = $"{BasePath}/{builder}";
 			var data = await GetTypedResponse<Dictionary<string, string>>(path);
@@ -45,7 +45,7 @@ namespace I18N.Address
 			return new AddressData(data);
 		}
 
-		public bool SupportsCountry(Country country)
+		internal bool SupportsCountry(Country country)
 		{
 			return Countries.Contains(country.Code);
 		}

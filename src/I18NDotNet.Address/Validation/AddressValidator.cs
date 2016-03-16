@@ -6,10 +6,10 @@ namespace I18N.Address.Validation
 {
 	internal class AddressValidator
 	{
-		private readonly IAddressDataService _addressDataService;
+		private readonly AddressDataService _addressDataService;
 		private readonly AddressFieldKey[] _allKeys;
 
-		public AddressValidator(IAddressDataService addressDataService)
+		public AddressValidator(AddressDataService addressDataService)
 		{
 			if (addressDataService == null)
 				throw new ArgumentNullException(nameof(addressDataService));
