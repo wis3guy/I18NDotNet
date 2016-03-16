@@ -1,4 +1,5 @@
-﻿using I18N;
+﻿using System.Globalization;
+using I18N;
 using I18N.Address;
 using I18N.Address.Validation;
 using Xunit;
@@ -10,9 +11,8 @@ namespace I18NDotNet.Tests.Address
 		[Fact]
 	    public async void Foo()
 		{
-			var country = new Country("NL");
-
-			var address = new AddressModel(country)
+			var culture = new CultureInfo("nl-NL");
+			var address = new AddressModel(culture)
 			{
 				Name = "Geoffrey Braaf",
 				AddressLine = { "Brouwersveld 65"},

@@ -6,23 +6,11 @@ namespace I18N.Address
 {
 	public class AddressModel
 	{
-		public AddressModel(Country country)
-		{
-			Country = country;
-			AddressLine = new List<string>();
-		}
-
-		public AddressModel(Country country, Language language) : this(country)
+		public AddressModel(Country country, Language language)
 		{
 			Language = language;
-		}
-
-		public AddressModel(RegionInfo region)
-		{
-			if (region == null)
-				throw new ArgumentNullException(nameof(region));
-
-			Country = new Country(region.Name);
+			Country = country;
+			AddressLine = new List<string>();
 		}
 
 		public AddressModel(CultureInfo culture)
@@ -35,6 +23,7 @@ namespace I18N.Address
 			var region = new RegionInfo(culture.Name);
 
 			Country = new Country(region.TwoLetterISORegionName);
+			AddressLine = new List<string>();
 		}
 
 		public string Name { get; set; }
@@ -46,6 +35,6 @@ namespace I18N.Address
 		public string PostalCode { get; set; }
 		public string SortingCode { get; set; }
 		public Country Country { get; }
-		public Language? Language { get; }
+		public Language Language { get; }
 	}
 }

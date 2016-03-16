@@ -10,8 +10,8 @@ namespace I18N.Address
 		public class PropertyNames
 		{
 			public const string SubRegionKeys = "sub_keys";
-			public const string SubRegionLocalNames = "sub_lnames";
-			public const string SubRegionLatinNames = "sub_names";
+			public const string SubRegionNames = "sub_names";
+			public const string SubRegionLatinNames = "sub_lnames";
 			public const string RequiredFields = "require";
 			public const string CurrentLanguage = "lang";
 			public const string SupportedLanguages = "languages";
@@ -61,9 +61,10 @@ namespace I18N.Address
 		/// <summary>
 		/// Gets the data key part of the subregion, for the given input.
 		/// </summary>
-		/// <param name="input">Case-insensitive key, latin name or local name</param>
+		/// <param name="language">Language for which to perform the matching</param>
+		/// <param name="input">Case-insensitive key, latin- or local-name</param>
 		/// <returns>Key if value is known, otherwise null</returns>
-		public string GetSubRegionKeyForInputValue(string input)
+		public string GetSubRegionKeyForInputValue(Language language, string input)
 		{
 			var lowercase = input.ToLowerInvariant();
 
@@ -76,19 +77,24 @@ namespace I18N.Address
 			if (match != null)
 				return match;
 
-			if (_data.ContainsKey(PropertyNames.SubRegionLocalNames))
+			if (language.Code != _data[PropertyNames.CurrentLanguage])
+				return null; // data is in a completely different langauge, only keys could have matched ...
+
+			if (language.IsForcedLatin)
 			{
-				candidates = _data[PropertyNames.SubRegionLocalNames].Split(ListItemDelimiter);
+				if (!_data.ContainsKey(PropertyNames.SubRegionLatinNames))
+					return null;
+
+				candidates = _data[PropertyNames.SubRegionLatinNames].Split(ListItemDelimiter);
 				match = candidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
 
-				if (match != null)
-					return match;
+				return match;
 			}
 
-			if (!_data.ContainsKey(PropertyNames.SubRegionLatinNames))
+			if (!_data.ContainsKey(PropertyNames.SubRegionNames))
 				return null;
 
-			candidates = _data[PropertyNames.SubRegionLatinNames].Split(ListItemDelimiter);
+			candidates = _data[PropertyNames.SubRegionNames].Split(ListItemDelimiter);
 			match = candidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
 
 			return match;
@@ -114,12 +120,14 @@ namespace I18N.Address
 					return current == language.Code;
 			}
 
-			if (!_data.ContainsKey(PropertyNames.SupportedLanguages))
-				return false;
+			if (_data.ContainsKey(PropertyNames.SupportedLanguages))
+			{
+				var supported = _data[PropertyNames.SupportedLanguages].Split(ListItemDelimiter);
 
-			var supported = _data[PropertyNames.SupportedLanguages].Split(ListItemDelimiter);
+				return supported.Any(x => x == language.Code);
+			}
 
-			return supported.Any(x => x == language.Code);
+			return true; // no language info in the data, so assume it is supported ...
 		}
 	}
 }

@@ -49,7 +49,7 @@
     <Compile Include="RegionDataConstants.cs" />
     <Compile Include="Validation\ValidationExtensions.cs" />
     <Compile Include="Formatting\IAddressFormatter.cs" />
-    <Compile Include="Validation\AddressInputExtensions.cs" />
+    <Compile Include="Validation\AddressModelExtensions.cs" />
     <Compile Include="Form\AddressField.cs" />
     <Compile Include="AddressFieldKey.cs" />
     <Compile Include="Validation\AddressFieldValidationFailure.cs" />

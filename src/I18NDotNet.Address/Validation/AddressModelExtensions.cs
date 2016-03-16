@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace I18N.Address.Validation
 {
-	internal static class AddressInputExtensions
+	internal static class AddressModelExtensions
 	{
 		public static string GetCleanCountryCodeValue(this AddressModel address)
 		{
@@ -56,6 +56,10 @@ namespace I18N.Address.Validation
 					return  new[] {address.PostalCode};
 				case AddressFieldKey.X:
 					return  new[] {address.SortingCode};
+				case AddressFieldKey.Country:
+					return new[] { address.Country.Code };
+				case AddressFieldKey.Language:
+					return new[] { address.Language.Code };
 				default:
 					throw new ArgumentOutOfRangeException(nameof(key), key, null);
 			}

@@ -50,11 +50,6 @@ namespace I18N.Address
 		/// <summary>
 		/// Optionl language of the address, used for region matching (never part of the data received from google, as it is part of the key)
 		/// </summary>
-		Language,
-
-		/// <summary>
-		/// Wether the address uses latin or local script (never part of the data received from google, as it is part of the key)
-		/// </summary>
-		Script
+		Language
 	}
 }
