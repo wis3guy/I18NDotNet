@@ -11,8 +11,7 @@ namespace I18N.Address
 		Z, // Zip or postal code
 		X, // Sorting code
 
-		Country
+		Country,
+		Language
 	}
-
-	
 }

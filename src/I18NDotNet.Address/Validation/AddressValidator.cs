@@ -34,10 +34,23 @@ namespace I18N.Address.Validation
 			{
 				var dataKey = new AddressDataKeyBuilder(model.Country);
 
-				if (model.Language.HasValue)
-					dataKey.SetLanguage(model.Language.Value);
-
 				data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
+
+				//
+				// Language
+
+				if (model.Language.HasValue)
+				{
+					if (!data.IsSupportedLanguage(model.Language.Value))
+					{
+						result.Add(new AddressFieldValidationFailure(AddressFieldKey.Language, ValidationFailureReason.Uknown));
+					}
+					else
+					{
+						dataKey.SetLanguage(model.Language.Value);
+						data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
+					}
+				}
 
 				if (!result.Any())
 				{
