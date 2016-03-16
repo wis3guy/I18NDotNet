@@ -7,8 +7,8 @@ namespace I18N.Address
 	public interface IAddressDataService : IDisposable
 	{
 		HashSet<string> Countries { get; }
-		Dictionary<string, string> Defaults { get; }
-		Task<Dictionary<string, string>> GetAddressDataAsync(AddressDataKey key);
+		AddressData Defaults { get; }
+		Task<AddressData> GetAddressDataAsync(AddressDataKeyBuilder builder);
 		bool SupportsCountry(Country country);
 	}
 }

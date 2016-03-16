@@ -8,34 +8,32 @@ namespace I18N.Address.Validation
 	{
 		public static string GetCleanCountryCodeValue(this AddressModel address)
 		{
-			return GetCleanValue(address.Country.Code);
+			return GetCleanValues(address.Country.Code);
 		}
 
-		public static string[] GetCleanValue(this AddressModel address, AddressFieldKey key)
+		public static string GetCleanValue(this AddressModel address, AddressFieldKey key)
 		{
-			return GetCleanValue(GetValue(address, key)).ToArray();
+			if (key == AddressFieldKey.A)
+				throw new InvalidOperationException("An address can have multiple address lines");
+
+			return GetCleanValues(address, key).Single();
 		}
 
-		private static IEnumerable<string> GetCleanValue(IEnumerable<string> result)
+		public static string[] GetCleanValues(this AddressModel address, AddressFieldKey key)
 		{
-			return result.Select(GetCleanValue);
+			return GetCleanValues(GetValue(address, key)).ToArray();
 		}
 
-		private static string GetCleanValue(string value)
+		private static IEnumerable<string> GetCleanValues(IEnumerable<string> result)
 		{
-			if (value == null)
-			{
-				return null;
-			}
-			else
-			{
-				var cleaned = value.Trim();
+			return result.Select(GetCleanValues);
+		}
 
-				if (string.IsNullOrEmpty(cleaned))
-					return null;
+		private static string GetCleanValues(string value)
+		{
+			var cleaned = value?.Trim();
 
-				return cleaned;
-			}
+			return string.IsNullOrEmpty(cleaned) ? null : cleaned;
 		}
 
 		private static IEnumerable<string> GetValue(AddressModel address, AddressFieldKey key)

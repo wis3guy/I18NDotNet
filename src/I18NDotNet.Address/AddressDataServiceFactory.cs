@@ -3,10 +3,12 @@ using System.Threading.Tasks;
 
 namespace I18N.Address
 {
+	// TODO: Add a CachingAddressDataServiceFactory so the consumer can choose whether to cache responses or not.
+
 	public class AddressDataServiceFactory
 	{
 		private HashSet<string> _countries;
-		private Dictionary<string, string> _defaults;
+		private AddressData _defaults;
 
 		public async Task<IAddressDataService> CreateAsync()
 		{

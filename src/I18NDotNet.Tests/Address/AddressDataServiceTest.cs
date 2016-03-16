@@ -30,7 +30,7 @@ namespace I18NDotNet.Tests.Address
 
 				Assert.True(support);
 
-				var response = await sut.GetAddressDataAsync(new AddressDataKey(country));
+				var response = await sut.GetAddressDataAsync(new AddressDataKeyBuilder(country));
 
 				Assert.NotNull(response);
 

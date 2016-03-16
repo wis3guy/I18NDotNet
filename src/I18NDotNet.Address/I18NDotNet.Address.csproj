@@ -43,10 +43,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddressDataKey.cs" />
+    <Compile Include="AddressData.cs" />
+    <Compile Include="AddressDataKeyBuilder.cs" />
     <Compile Include="AddressDataService.cs" />
     <Compile Include="AddressDataServiceFactory.cs" />
-    <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="IAddressDataService.cs" />
     <Compile Include="Validation\ValidationExtensions.cs" />
     <Compile Include="Formatting\IAddressFormatter.cs" />
