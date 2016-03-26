@@ -50,10 +50,7 @@ namespace I18N.Address.Validation
 
 				if (!result.Any())
 				{
-					//
-					// Administrative area
-
-					var input = model.GetCleanValue(AddressFieldKey.S);
+					var input = model.GetCleanValue(AddressFieldKey.S); // administrative area
 
 					if (input != null)
 					{
@@ -68,10 +65,7 @@ namespace I18N.Address.Validation
 							dataKey.Append(subRegionKey);
 							data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
 
-							//
-							// Locality
-
-							input = model.GetCleanValue(AddressFieldKey.C);
+							input = model.GetCleanValue(AddressFieldKey.C); // locality
 
 							if (input != null)
 							{
@@ -86,10 +80,7 @@ namespace I18N.Address.Validation
 									dataKey.Append(subRegionKey);
 									data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
 
-									//
-									// Sub-locality
-
-									input = model.GetCleanValue(AddressFieldKey.D);
+									input = model.GetCleanValue(AddressFieldKey.D); // dependent locality
 
 									if (input != null)
 									{

@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace I18N.Address.Validation
+namespace I18N.Address
 {
 	internal static class AddressModelExtensions
 	{
-		public static string GetCleanCountryCodeValue(this AddressModel address)
-		{
-			return GetCleanValues(address.Country.Code);
-		}
-
 		public static string GetCleanValue(this AddressModel address, AddressFieldKey key)
 		{
 			if (key == AddressFieldKey.A)
@@ -26,10 +21,10 @@ namespace I18N.Address.Validation
 
 		private static IEnumerable<string> GetCleanValues(IEnumerable<string> result)
 		{
-			return result.Select(GetCleanValues);
+			return result.Select(GetCleanValue);
 		}
 
-		private static string GetCleanValues(string value)
+		private static string GetCleanValue(string value)
 		{
 			var cleaned = value?.Trim();
 

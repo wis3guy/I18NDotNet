@@ -9,6 +9,7 @@ namespace I18N.Address
 	{
 		public class PropertyNames
 		{
+			public const string Name = "name";
 			public const string SubRegionKeys = "sub_keys";
 			public const string SubRegionNames = "sub_names";
 			public const string SubRegionLatinNames = "sub_lnames";
@@ -16,10 +17,10 @@ namespace I18N.Address
 			public const string CurrentLanguage = "lang";
 			public const string SupportedLanguages = "languages";
 			public const string Format = "fmt";
+			public const string ZipRegex = "zip";
 		}
 
 		private const char ListItemDelimiter = '~';
-
 
 		private readonly IDictionary<string, string> _data;
 
@@ -31,7 +32,11 @@ namespace I18N.Address
 			_data = data;
 		}
 
-		public Regex ZipRegex => _data.ContainsKey("zip") ? new Regex(_data["zip"]) : null;
+		public string Format => _data.ContainsKey(PropertyNames.Format) ? _data[PropertyNames.Format] : null;
+
+		public string Name => _data.ContainsKey(PropertyNames.Name) ? _data[PropertyNames.Name] : null;
+
+		public Regex ZipRegex => _data.ContainsKey(PropertyNames.ZipRegex) ? new Regex(_data[PropertyNames.ZipRegex]) : null;
 
 		/// <summary>
 		/// Creates a new instance with all of the current values, overwritten by (non-null) values from the more specific instance.
@@ -107,7 +112,7 @@ namespace I18N.Address
 
 		public bool IsExpectedField(AddressFieldKey key)
 		{
-			return _data.ContainsKey(PropertyNames.Format) && _data[PropertyNames.Format].Contains($"%{key}");
+			return Format != null && Format.Contains($"%{key}");
 		}
 
 		public bool IsSupportedLanguage(Language language)
