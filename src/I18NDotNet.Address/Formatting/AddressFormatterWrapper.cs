@@ -27,7 +27,7 @@ namespace I18N.Address.Formatting
 		private async Task<Tuple<string, AddressData>> GetMostSpecificDataAsync(AddressModel model)
 		{
 			string country = null;
-			var data = _service.Defaults;
+			var data = _service.GetCountryDefaults();
 
 			if (_service.SupportsCountry(model.Country))
 			{

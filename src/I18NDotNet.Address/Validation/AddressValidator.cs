@@ -21,7 +21,7 @@ namespace I18N.Address.Validation
 		public async Task<IAddressValidationResult> ValidateAsync(AddressModel model)
 		{
 			var result = new AddressValidationResult();
-			var data = _addressDataService.Defaults;
+			var data = _addressDataService.GetCountryDefaults();
 
 			//
 			// Country

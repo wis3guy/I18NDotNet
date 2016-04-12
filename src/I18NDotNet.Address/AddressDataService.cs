@@ -7,7 +7,7 @@ namespace I18N.Address
 	public sealed class AddressDataService : GoogleI18NServiceBase
 	{
 		private const string BasePath = "address/data";
-		private const string DefaultsKey = "ZZ";
+		private const string DefaultCountryCode = "ZZ";
 
 		private static readonly RegionDataConstants Constants = new RegionDataConstants();
 
@@ -24,8 +24,6 @@ namespace I18N.Address
 
 			_cache = cache;
 		}
-
-		internal AddressData Defaults => Constants[DefaultsKey];
 
 		internal async Task<AddressData> GetAddressDataAsync(AddressDataKeyBuilder builder)
 		{
@@ -51,7 +49,21 @@ namespace I18N.Address
 
 		internal AddressData GetCountryDefaults(Country country)
 		{
-			return Constants[country.Code];
+			return GetCountryDefaults(country.Code);
+		}
+
+		internal AddressData GetCountryDefaults(string key = null)
+		{
+			var data = _cache.Get(key ?? DefaultCountryCode);
+
+			if (data != null)
+				return new AddressData(data);
+
+			data = Constants[DefaultCountryCode];
+
+			_cache.Add(key, data);
+
+			return new AddressData(data);
 		}
 
 		private class DummyAddressDataCache : IAddressDataCache
