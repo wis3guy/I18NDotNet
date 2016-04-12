@@ -50,6 +50,7 @@
     <Compile Include="Formatting\AddressHtmlFormatter.cs" />
     <Compile Include="Formatting\AddressStringFormatter.cs" />
     <Compile Include="Formatting\FormattingExtensions.cs" />
+    <Compile Include="IAddressDataCache.cs" />
     <Compile Include="RegionDataConstants.cs" />
     <Compile Include="Validation\AddressValidationException.cs" />
     <Compile Include="Validation\ValidationExtensions.cs" />

@@ -20,7 +20,7 @@ namespace I18N
 			};
 		}
 
-		protected async Task<Dictionary<string, string>> GetJsonResponseAsDictionary(string path)
+		protected async Task<Dictionary<string, string>> GetJsonResponseAsDictionaryAsync(string path)
 		{
 			var response = await _httpClient.GetAsync(path);
 
