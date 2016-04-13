@@ -8,9 +8,7 @@ namespace I18N.Address
 	{
 		private const string BasePath = "address/data";
 		private const string DefaultCountryCode = "ZZ";
-
-		private static readonly RegionDataConstants Constants = new RegionDataConstants();
-
+		
 		private readonly IAddressDataCache _cache;
 
 		public AddressDataService()
@@ -25,13 +23,13 @@ namespace I18N.Address
 			_cache = cache;
 		}
 
-		internal async Task<AddressData> GetAddressDataAsync(AddressDataKeyBuilder builder)
+		public async Task<DEPRICATED_AddressData> GetAddressDataAsync(AddressDataKey builder)
 		{
 			var key = builder.ToString();
 			var data = _cache.Get(key);
 
 			if (data != null)
-				return new AddressData(data);
+				return new DEPRICATED_AddressData(data);
 
 			var path = $"{BasePath}/{builder}";
 
@@ -39,31 +37,31 @@ namespace I18N.Address
 
 			_cache.Add(key, data);
 
-			return new AddressData(data);
+			return new DEPRICATED_AddressData(data);
 		}
 
-		internal bool SupportsCountry(Country country)
+		public bool SupportsCountry(string countryCode)
 		{
-			return Constants.ContainsKey(country.Code);
+			return RegionDataConstants.ContainsKey(countryCode);
 		}
 
-		internal AddressData GetCountryDefaults(Country country)
+		internal DEPRICATED_AddressData GetCountryDefaults(Country country)
 		{
 			return GetCountryDefaults(country.Code);
 		}
 
-		internal AddressData GetCountryDefaults(string key = null)
+		internal DEPRICATED_AddressData GetCountryDefaults(string key = null)
 		{
 			var data = _cache.Get(key ?? DefaultCountryCode);
 
 			if (data != null)
-				return new AddressData(data);
+				return new DEPRICATED_AddressData(data);
 
-			data = Constants[DefaultCountryCode];
+			data = RegionDataConstants.Get(DefaultCountryCode);
 
 			_cache.Add(key, data);
 
-			return new AddressData(data);
+			return new DEPRICATED_AddressData(data);
 		}
 
 		private class DummyAddressDataCache : IAddressDataCache

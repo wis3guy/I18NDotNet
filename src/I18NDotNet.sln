@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "I18NDotNet.Tests", "I18NDot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "I18NDotNet.Address", "I18NDotNet.Address\I18NDotNet.Address.csproj", "{96573446-A519-451E-A275-E6F15D496FBC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "I18NDotNet.Address.Mvc", "I18NDotNet.Address.Mvc\I18NDotNet.Address.Mvc.csproj", "{010D3815-EFEB-4702-8338-8371D8230080}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "I18NDotNet.Demo", "I18NDotNet.Demo\I18NDotNet.Demo.csproj", "{49D7715A-CF1E-4BB8-BA03-672656E9DD1A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{96573446-A519-451E-A275-E6F15D496FBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96573446-A519-451E-A275-E6F15D496FBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96573446-A519-451E-A275-E6F15D496FBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{010D3815-EFEB-4702-8338-8371D8230080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{010D3815-EFEB-4702-8338-8371D8230080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{010D3815-EFEB-4702-8338-8371D8230080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{010D3815-EFEB-4702-8338-8371D8230080}.Release|Any CPU.Build.0 = Release|Any CPU
+		{49D7715A-CF1E-4BB8-BA03-672656E9DD1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{49D7715A-CF1E-4BB8-BA03-672656E9DD1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{49D7715A-CF1E-4BB8-BA03-672656E9DD1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{49D7715A-CF1E-4BB8-BA03-672656E9DD1A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

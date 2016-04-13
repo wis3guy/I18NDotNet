@@ -3,13 +3,13 @@ using Newtonsoft.Json;
 
 namespace I18N.Address
 {
-	public class RegionDataConstants
+	public static class RegionDataConstants
 	{
-		private readonly IDictionary<string, string> _constants;
+		private static readonly IDictionary<string, string> Constants;
 
-		public RegionDataConstants()
+		static RegionDataConstants()
 		{
-			_constants = new Dictionary<string, string>
+			Constants = new Dictionary<string, string>
 			{
 				{"AC", "{\"name\":\"ASCENSION ISLAND\"}"},
 				{"AD", "{\"name\":\"ANDORRA\",\"lang\":\"ca\",\"languages\":\"ca\",\"fmt\":\"%N%n%O%n%A%n%Z %C\"}"},
@@ -263,13 +263,12 @@ namespace I18N.Address
 			};
 		}
 
-		public bool ContainsKey(string key)
-		{
-			return _constants.ContainsKey(key);
-		}
+		public static bool ContainsKey(string key) => Constants.ContainsKey(key);
 
-		public IDictionary<string, string> this[string key] => JsonConvert.DeserializeObject<Dictionary<string, string>>(_constants[key]);
+		public static IDictionary<string, string> Get(string key) => JsonConvert.DeserializeObject<Dictionary<string, string>>(Constants[key]);
 		
-		public IEnumerable<string> Keys => _constants.Keys;
+		public static IEnumerable<string> Keys => Constants.Keys;
+
+		public const string DefaultCountryCode = "ZZ";
 	}
 }

@@ -3,20 +3,20 @@ using System.Collections.Generic;
 
 namespace I18N.Address
 {
-	public class AddressDataKeyBuilder
+	public class AddressDataKey
 	{
-		private Language? _language;
+		private string _languageCode;
 		private string _key;
 		private readonly List<string> _parts;
 
-		public AddressDataKeyBuilder(Country country)
+		public AddressDataKey(string countryCode)
 		{
-			_parts = new List<string>(new[] {country.Code});
+			_parts = new List<string>(new[] {countryCode});
 		}
 
-		public void SetLanguage(Language language)
+		public void SetLanguage(string languageCode)
 		{
-			_language = language;
+			_languageCode = languageCode;
 			_key = null;
 		}
 
@@ -38,8 +38,8 @@ namespace I18N.Address
 		{
 			var key = string.Join("/", _parts);
 
-			if (_language.HasValue)
-				key = $"{key}--{_language.Value.Code}";
+			if (_languageCode != null)
+				key = $"{key}--{_languageCode}";
 
 			return key;
 		}

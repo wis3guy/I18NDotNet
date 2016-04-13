@@ -1,13 +1,82 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace I18N.Address
 {
-	public class AddressData
+	public class AddressData : IReadOnlyDictionary<string, string>
 	{
-		public class PropertyNames
+		private readonly List<KeyValuePair<string, IDictionary<string, string>>> _data;
+		
+		public AddressData()
+		{
+			_data = new List<KeyValuePair<string, IDictionary<string, string>>>
+			{
+				new KeyValuePair<string, IDictionary<string, string>>(
+					RegionDataConstants.DefaultCountryCode,
+					RegionDataConstants.Get(RegionDataConstants.DefaultCountryCode))
+			};
+		}
+
+		private IDictionary<string, string> MostSpecific => _data.Last().Value;
+
+		public void Refine(string key, IDictionary<string, string> data)
+		{
+			if (key == null) throw new ArgumentNullException(nameof(key));
+			if (data == null) throw new ArgumentNullException(nameof(data));
+
+			var merged = new Dictionary<string, string>();
+
+			foreach (var pair in MostSpecific)
+			{
+				var property = pair.Key;
+				var value = pair.Value;
+
+				if (data.ContainsKey(property) && !string.IsNullOrEmpty(data[property]))
+					value = data[property];
+
+				merged.Add(property, value);
+			}
+
+			foreach (var property in data.Keys.Except(merged.Keys))
+			{
+				var value = data[property];
+
+				if (!string.IsNullOrEmpty(value))
+					merged.Add(property, value);
+			}
+
+			_data.Add(new KeyValuePair<string, IDictionary<string, string>>(key, merged));
+		}
+
+		public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
+		{
+			return MostSpecific.GetEnumerator();
+		}
+
+		IEnumerator IEnumerable.GetEnumerator()
+		{
+			return GetEnumerator();
+		}
+
+		public int Count => MostSpecific.Count;
+
+		public bool ContainsKey(string key)
+		{
+			return MostSpecific.ContainsKey(key);
+		}
+
+		public bool TryGetValue(string key, out string value)
+		{
+			return MostSpecific.TryGetValue(key, out value);
+		}
+
+		public string this[string key] => MostSpecific[key];
+		public IEnumerable<string> Keys => MostSpecific.Keys;
+		public IEnumerable<string> Values => MostSpecific.Values;
+
+		public static class Properties
 		{
 			public const string Name = "name";
 			public const string SubRegionKeys = "sub_keys";
@@ -18,121 +87,6 @@ namespace I18N.Address
 			public const string SupportedLanguages = "languages";
 			public const string Format = "fmt";
 			public const string ZipRegex = "zip";
-		}
-
-		private const char ListItemDelimiter = '~';
-
-		private readonly IDictionary<string, string> _data;
-
-		public AddressData(IDictionary<string, string> data)
-		{
-			if (data == null)
-				throw new ArgumentNullException(nameof(data));
-
-			_data = data;
-		}
-
-		public string Format => _data.ContainsKey(PropertyNames.Format) ? _data[PropertyNames.Format] : null;
-
-		public string Name => _data.ContainsKey(PropertyNames.Name) ? _data[PropertyNames.Name] : null;
-
-		public Regex ZipRegex => _data.ContainsKey(PropertyNames.ZipRegex) ? new Regex(_data[PropertyNames.ZipRegex]) : null;
-
-		/// <summary>
-		/// Creates a new instance with all of the current values, overwritten by (non-null) values from the more specific instance.
-		/// </summary>
-		/// <param name="moreSpecific">Addres data to overwrite known values with</param>
-		/// <returns>A refined instance of the address data</returns>
-		public AddressData Refine(AddressData moreSpecific)
-		{
-			var data = new Dictionary<string, string>(_data);
-
-			foreach (var key in moreSpecific._data.Keys)
-			{
-				var value = moreSpecific._data[key];
-
-				if (string.IsNullOrEmpty(value))
-					continue; // no value to override with ...
-
-				if (data.ContainsKey(key))
-					data[key] = value;
-				else
-					data.Add(key, value);
-			}
-
-			return new AddressData(data);
-		}
-
-		/// <summary>
-		/// Gets the data key part of the subregion, for the given input.
-		/// </summary>
-		/// <param name="language">Language for which to perform the matching</param>
-		/// <param name="input">Case-insensitive key, latin- or local-name</param>
-		/// <returns>Key if value is known, otherwise null</returns>
-		public string GetSubRegionKeyForInputValue(Language language, string input)
-		{
-			var lowercase = input.ToLowerInvariant();
-
-			if (!_data.ContainsKey(PropertyNames.SubRegionKeys))
-				return null;
-
-			var candidates = _data[PropertyNames.SubRegionKeys].Split(ListItemDelimiter);
-			var match = candidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
-
-			if (match != null)
-				return match;
-
-			if (language.Code != _data[PropertyNames.CurrentLanguage])
-				return null; // data is in a completely different langauge, only keys could have matched ...
-
-			if (language.IsForcedLatin)
-			{
-				if (!_data.ContainsKey(PropertyNames.SubRegionLatinNames))
-					return null;
-
-				candidates = _data[PropertyNames.SubRegionLatinNames].Split(ListItemDelimiter);
-				match = candidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
-
-				return match;
-			}
-
-			if (!_data.ContainsKey(PropertyNames.SubRegionNames))
-				return null;
-
-			candidates = _data[PropertyNames.SubRegionNames].Split(ListItemDelimiter);
-			match = candidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
-
-			return match;
-		}
-
-		public bool IsRequiredField(AddressFieldKey key)
-		{
-			return _data.ContainsKey(PropertyNames.RequiredFields) && _data[PropertyNames.RequiredFields].Contains($"{key}");
-		}
-
-		public bool IsExpectedField(AddressFieldKey key)
-		{
-			return Format != null && Format.Contains($"%{key}");
-		}
-
-		public bool IsSupportedLanguage(Language language)
-		{
-			if (_data.ContainsKey(PropertyNames.CurrentLanguage))
-			{
-				var current = _data[PropertyNames.CurrentLanguage];
-
-				if (current != null)
-					return current == language.Code;
-			}
-
-			if (_data.ContainsKey(PropertyNames.SupportedLanguages))
-			{
-				var supported = _data[PropertyNames.SupportedLanguages].Split(ListItemDelimiter);
-
-				return supported.Any(x => x == language.Code);
-			}
-
-			return true; // no language info in the data, so assume it is supported ...
 		}
 	}
 }

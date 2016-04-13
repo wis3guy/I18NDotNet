@@ -6,7 +6,7 @@ namespace I18N.Address.Formatting
 {
 	public static class FormattingExtensions
 	{
-		public static Task<string> FormatStringAsync(this AddressDataService service, AddressModel model)
+		public static Task<string> FormatStringAsync(this AddressDataService service, IAddress model)
 		{
 			if (service == null) throw new ArgumentNullException(nameof(service));
 			if (model == null) throw new ArgumentNullException(nameof(model));
@@ -14,7 +14,7 @@ namespace I18N.Address.Formatting
 			return service.FormatAsync(new AddressStringFormatter(), model);
 		}
 
-		public static Task<string> FormatHtmlAsync(this AddressDataService service, AddressModel model)
+		public static Task<string> FormatHtmlAsync(this AddressDataService service, IAddress model)
 		{
 			if (service == null) throw new ArgumentNullException(nameof(service));
 			if (model == null) throw new ArgumentNullException(nameof(model));
@@ -22,7 +22,7 @@ namespace I18N.Address.Formatting
 			return service.FormatAsync(new AddressHtmlFormatter(), model);
 		}
 
-		public static async Task<string> FormatAsync(this AddressDataService service, IAddressFormatter formatter, AddressModel model)
+		public static async Task<string> FormatAsync(this AddressDataService service, IAddressFormatter formatter, IAddress model)
 		{
 			if (service == null) throw new ArgumentNullException(nameof(service));
 			if (formatter == null) throw new ArgumentNullException(nameof(formatter));

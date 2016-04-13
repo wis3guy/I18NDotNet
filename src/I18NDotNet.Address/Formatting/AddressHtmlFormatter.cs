@@ -5,15 +5,16 @@ namespace I18N.Address.Formatting
 {
 	internal class AddressHtmlFormatter : IAddressFormatter
 	{
-		public string Format(AddressModel model, string country, string format)
+		public string Format(IAddress address, string country, string format)
 		{
-			if (model == null) throw new ArgumentNullException(nameof(model));
+			if (address == null) throw new ArgumentNullException(nameof(address));
 			if (country == null) throw new ArgumentNullException(nameof(country));
 			if (format == null) throw new ArgumentNullException(nameof(format));
 
 			var builder = new StringBuilder();
 			var addressFieldIndex = 0;
 			var flag = false;
+			var model = new KeyedAddress(address);
 
 			builder.Append("<div class=\"address\">");
 			builder.Append("<div class=\"line\">");

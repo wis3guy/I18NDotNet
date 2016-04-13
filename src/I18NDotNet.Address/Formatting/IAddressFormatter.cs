@@ -2,6 +2,6 @@
 {
 	public interface IAddressFormatter
 	{
-		string Format(AddressModel model, string country, string format);
+		string Format(IAddress model, string country, string format);
 	}
 }

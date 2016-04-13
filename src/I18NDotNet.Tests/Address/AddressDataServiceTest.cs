@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using I18N;
 using I18N.Address;
 using I18N.Address.Validation;
 using Xunit;
@@ -12,12 +11,15 @@ namespace I18NDotNet.Tests.Address
 	    public async void Foo()
 		{
 			var culture = new CultureInfo("nl-NL");
-			var address = new AddressModel(culture)
+			var region = new RegionInfo(culture.LCID);
+			var address = new Address
 			{
 				Name = "Geoffrey Braaf",
-				AddressLine = { "Brouwersveld 65"},
+				AddressLine = new []{ "Brouwersveld 65"},
 				PostalCode = "1541 PE",
-				City = "Koog aan de Zaan"
+				City = "Koog aan de Zaan",
+				CountryCode = region.TwoLetterISORegionName,
+				LanguageCode = culture.TwoLetterISOLanguageName
 			};
 
 			using (var sut = new AddressDataService())
@@ -28,4 +30,18 @@ namespace I18NDotNet.Tests.Address
 			}
 		}
     }
+
+	internal class Address : IAddress
+	{
+		public string Name {get; set;}
+		public string Organisation {get; set;}
+		public string[] AddressLine {get; set;}
+		public string City {get; set;}
+		public string DependentLocality {get; set;}
+		public string AdministrativeArea {get; set;}
+		public string PostalCode {get; set;}
+		public string SortingCode {get; set;}
+		public string CountryCode {get; set;}
+		public string LanguageCode {get; set;}
+	}
 }
