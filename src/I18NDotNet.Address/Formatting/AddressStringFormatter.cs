@@ -14,7 +14,7 @@ namespace I18N.Address.Formatting
 			var builder = new StringBuilder();
 			var addressFieldIndex = 0;
 			var flag = false;
-			var model = new KeyedAddress(address);
+			var model = new Address(address);
 
 			foreach (var c in format.ToCharArray())
 			{

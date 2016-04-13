@@ -7,8 +7,7 @@ namespace I18N.Address
 	public sealed class AddressDataService : GoogleI18NServiceBase
 	{
 		private const string BasePath = "address/data";
-		private const string DefaultCountryCode = "ZZ";
-		
+
 		private readonly IAddressDataCache _cache;
 
 		public AddressDataService()
@@ -23,13 +22,13 @@ namespace I18N.Address
 			_cache = cache;
 		}
 
-		public async Task<DEPRICATED_AddressData> GetAddressDataAsync(AddressDataKey builder)
+		public async Task<IDictionary<string, string>> GetAddressDataAsync(AddressDataKey builder)
 		{
 			var key = builder.ToString();
 			var data = _cache.Get(key);
 
 			if (data != null)
-				return new DEPRICATED_AddressData(data);
+				return data;
 
 			var path = $"{BasePath}/{builder}";
 
@@ -37,33 +36,14 @@ namespace I18N.Address
 
 			_cache.Add(key, data);
 
-			return new DEPRICATED_AddressData(data);
+			return data;
 		}
 
 		public bool SupportsCountry(string countryCode)
 		{
 			return RegionDataConstants.ContainsKey(countryCode);
 		}
-
-		internal DEPRICATED_AddressData GetCountryDefaults(Country country)
-		{
-			return GetCountryDefaults(country.Code);
-		}
-
-		internal DEPRICATED_AddressData GetCountryDefaults(string key = null)
-		{
-			var data = _cache.Get(key ?? DefaultCountryCode);
-
-			if (data != null)
-				return new DEPRICATED_AddressData(data);
-
-			data = RegionDataConstants.Get(DefaultCountryCode);
-
-			_cache.Add(key, data);
-
-			return new DEPRICATED_AddressData(data);
-		}
-
+		
 		private class DummyAddressDataCache : IAddressDataCache
 		{
 			public void Add(string key, IDictionary<string, string> data)

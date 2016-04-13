@@ -19,30 +19,30 @@ namespace I18N.Address.Formatting
 			if (model == null) throw new ArgumentNullException(nameof(model));
 			if (formatter == null) throw new ArgumentNullException(nameof(formatter));
 
-			var tuple = await GetMostSpecificDataAsync(model);
+			var data = await GetDataAsync(model);
 
-			return formatter.Format(model, tuple.Item1, tuple.Item2.Format);
+			var country = data[AddressDataContext.Country][AddressData.Properties.Name];
+			var format = data[AddressData.Properties.Format];
+
+			return formatter.Format(model, country, format);
 		}
 
-		private async Task<Tuple<string, DEPRICATED_AddressData>> GetMostSpecificDataAsync(IAddress address)
+		private async Task<AddressData> GetDataAsync(IAddress address)
 		{
-			var model = new KeyedAddress(address);
-			string country = null;
-			var data = _service.GetCountryDefaults();
+			var model = new Address(address);
+			var data = new AddressData();
 
-			if (_service.SupportsCountry(model.CountryCode))
+			if (RegionDataConstants.ContainsKey(model.CountryCode))
 			{
 				var dataKey = new AddressDataKey(model.CountryCode);
 
-				data = _service.GetCountryDefaults(model.CountryCode);
+				data.Refine(dataKey,RegionDataConstants.Get(dataKey.ToString()));
 
-				if (data.IsSupportedLanguage(model.LanguageCode))
+				if (data.ContainsLanguage(model.LanguageCode))
 				{
 					dataKey.SetLanguage(model.LanguageCode);
-					data.Refine(await _service.GetAddressDataAsync(dataKey));
+					data.Refine(dataKey, await _service.GetAddressDataAsync(dataKey));
 				}
-
-				country = data.Name;
 
 				var input = model.GetCleanValue(AddressFieldKey.S); // administrative area
 
@@ -53,7 +53,7 @@ namespace I18N.Address.Formatting
 					if (subRegionKey != null)
 					{
 						dataKey.Append(subRegionKey);
-						data.Refine(await _service.GetAddressDataAsync(dataKey));
+						data.Refine(dataKey, await _service.GetAddressDataAsync(dataKey));
 
 						input = model.GetCleanValue(AddressFieldKey.C); // locality
 
@@ -64,7 +64,7 @@ namespace I18N.Address.Formatting
 							if (subRegionKey != null)
 							{
 								dataKey.Append(subRegionKey);
-								data.Refine(await _service.GetAddressDataAsync(dataKey));
+								data.Refine(dataKey, await _service.GetAddressDataAsync(dataKey));
 
 								input = model.GetCleanValue(AddressFieldKey.D); // dependent locality
 
@@ -75,7 +75,7 @@ namespace I18N.Address.Formatting
 									if (subRegionKey != null)
 									{
 										dataKey.Append(subRegionKey);
-										data.Refine(await _service.GetAddressDataAsync(dataKey));
+										data.Refine(dataKey, await _service.GetAddressDataAsync(dataKey));
 									}
 								}
 							}
@@ -84,7 +84,7 @@ namespace I18N.Address.Formatting
 				}
 			}
 
-			return new Tuple<string, DEPRICATED_AddressData>(country, data);
+			return data;
 		}
 	}
 }

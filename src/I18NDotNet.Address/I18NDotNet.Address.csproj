@@ -44,8 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AddressData.cs" />
-    <Compile Include="KeyedAddress.cs" />
-    <Compile Include="DEPRICATED_AddressData.cs" />
+    <Compile Include="AddressDataExtensions.cs" />
+    <Compile Include="AddressDataContext.cs" />
+    <Compile Include="Address.cs" />
     <Compile Include="AddressDataKey.cs" />
     <Compile Include="AddressDataService.cs" />
     <Compile Include="Formatting\AddressFormatterWrapper.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="Formatting\FormattingExtensions.cs" />
     <Compile Include="IAddressDataCache.cs" />
     <Compile Include="RegionDataConstants.cs" />
+    <Compile Include="Validation\AddressDataValidationExtensions.cs" />
     <Compile Include="Validation\AddressValidationException.cs" />
     <Compile Include="Validation\ValidationExtensions.cs" />
     <Compile Include="Formatting\IAddressFormatter.cs" />

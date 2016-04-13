@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace I18N.Address.Validation
@@ -21,8 +22,8 @@ namespace I18N.Address.Validation
 		public async Task<IAddressValidationResult> ValidateAsync(IAddress address)
 		{
 			var result = new AddressValidationResult();
-			var data = _addressDataService.GetCountryDefaults();
-			var model = new KeyedAddress(address);
+			var data = new AddressData();
+			var model = new Address(address);
 
 			//
 			// Country
@@ -34,19 +35,19 @@ namespace I18N.Address.Validation
 			else
 			{
 				var dataKey = new AddressDataKey(model.CountryCode);
-				data.Refine(_addressDataService.GetCountryDefaults(model.CountryCode));
+				data.Refine(dataKey, RegionDataConstants.Get(dataKey.ToString()));
 
 				//
 				// Language
 
-				if (!data.IsSupportedLanguage(model.LanguageCode))
+				if (!data.ContainsLanguage(model.LanguageCode))
 				{
 					result.Add(new AddressFieldValidationFailure(AddressFieldKey.Language, ValidationFailureReason.Uknown));
 				}
 				else
 				{
 					dataKey.SetLanguage(model.LanguageCode);
-					data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
+					data.Refine(dataKey, await _addressDataService.GetAddressDataAsync(dataKey));
 				}
 
 				if (!result.Any())
@@ -64,7 +65,7 @@ namespace I18N.Address.Validation
 						else
 						{
 							dataKey.Append(subRegionKey);
-							data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
+							data.Refine(dataKey, await _addressDataService.GetAddressDataAsync(dataKey));
 
 							input = model.GetCleanValue(AddressFieldKey.C); // locality
 
@@ -79,7 +80,7 @@ namespace I18N.Address.Validation
 								else
 								{
 									dataKey.Append(subRegionKey);
-									data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
+									data.Refine(dataKey, await _addressDataService.GetAddressDataAsync(dataKey));
 
 									input = model.GetCleanValue(AddressFieldKey.D); // dependent locality
 
@@ -94,7 +95,7 @@ namespace I18N.Address.Validation
 										else
 										{
 											dataKey.Append(subRegionKey);
-											data.Refine(await _addressDataService.GetAddressDataAsync(dataKey));
+											data.Refine(dataKey, await _addressDataService.GetAddressDataAsync(dataKey));
 										}
 									}
 								}
@@ -107,11 +108,11 @@ namespace I18N.Address.Validation
 			//
 			// Zip code
 
-			if (data.ZipRegex != null)
+			if (data.ContainsKey(AddressData.Properties.ZipRegex))
 			{
 				var input = model.GetCleanValues(AddressFieldKey.Z).Single();
 
-				if (!data.ZipRegex.IsMatch(input))
+				if (!data.IsValidPostalCodeField(input))
 					result.Add(new AddressFieldValidationFailure(AddressFieldKey.Z, ValidationFailureReason.Invalid));
 			}
 

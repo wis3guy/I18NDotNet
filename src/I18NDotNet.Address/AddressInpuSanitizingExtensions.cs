@@ -5,7 +5,7 @@ namespace I18N.Address
 {
 	internal static class AddressInpuSanitizingExtensions
 	{
-		public static string GetCleanValue(this KeyedAddress address, AddressFieldKey key)
+		public static string GetCleanValue(this Address address, AddressFieldKey key)
 		{
 			if (key == AddressFieldKey.A)
 				throw new InvalidOperationException("An address can have multiple address lines");
@@ -13,7 +13,7 @@ namespace I18N.Address
 			return GetCleanValues(address, key).Single();
 		}
 
-		public static string[] GetCleanValues(this KeyedAddress address, AddressFieldKey key)
+		public static string[] GetCleanValues(this Address address, AddressFieldKey key)
 		{
 			return address[key].Select(GetCleanValue).ToArray();
 		}

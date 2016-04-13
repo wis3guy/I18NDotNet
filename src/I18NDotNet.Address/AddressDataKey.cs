@@ -12,6 +12,9 @@ namespace I18N.Address
 		public AddressDataKey(string countryCode)
 		{
 			_parts = new List<string>(new[] {countryCode});
+			Context = countryCode == RegionDataConstants.DefaultCountryCode
+				? AddressDataContext.Default
+				: AddressDataContext.Country;
 		}
 
 		public void SetLanguage(string languageCode)
@@ -27,7 +30,10 @@ namespace I18N.Address
 
 			_parts.Add(part);
 			_key = null;
+			Context++;
 		}
+
+		public AddressDataContext Context { get; private set; }
 
 		public override string ToString()
 		{

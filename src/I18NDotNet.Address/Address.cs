@@ -2,11 +2,11 @@ using System;
 
 namespace I18N.Address
 {
-	public class KeyedAddress : IAddress
+	public class Address : IAddress
 	{
 		private readonly IAddress _inner;
 		
-		public KeyedAddress(IAddress inner)
+		public Address(IAddress inner)
 		{
 			if (inner == null) throw new ArgumentNullException(nameof(inner));
 
