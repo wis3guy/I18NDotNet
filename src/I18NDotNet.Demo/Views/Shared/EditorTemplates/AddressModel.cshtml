@@ -85,4 +85,4 @@
 		@Html.LabelFor(x => x.CountryCode)
 	</div>
 </div>
-@Html.HiddenFor(x => x.LanguageCode)
+@Html.HiddenFor(x => x.LanguageCode, new {data_purpose = "language"})

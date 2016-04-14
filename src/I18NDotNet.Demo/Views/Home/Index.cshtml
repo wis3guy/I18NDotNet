@@ -42,7 +42,7 @@
 		$('select').material_select();
 
 		$("select", "div[data-purpose='country']").on("change", function () {
-			var language = $("input", $("div[data-purpose='language']", $(this).closest(".address"))).val();
+			var language = $("input[data-purpose='language']", $(this).closest(".address")).val();
 			var country = $("select", "div[data-purpose='country']").val();
 
 			$.getJSON(
