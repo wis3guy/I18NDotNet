@@ -1,4 +1,4 @@
-﻿@model I18NDotNet.Demo.Controllers.FormModel
+﻿@model I18NDotNet.Demo.Models.FormModel
 
 @{
     Layout = null;
@@ -18,11 +18,11 @@
 	<div class="row">
 		<form class="col s12">
 			<div class="row">
-				<div class="col s6">
+				<div class="col s6 address">
 					<h3>Visit address</h3>
 					@Html.EditorFor(x => x.VisitAddress)
 				</div>
-				<div class="col s6">
+				<div class="col s6 address">
 					<h3>Postal address</h3>
 					@Html.EditorFor(x => x.PostalAddress)
 				</div>
@@ -40,6 +40,17 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		$('select').material_select();
+
+		$("select", "div[data-purpose='country']").on("change", function () {
+			var language = $("input", $("div[data-purpose='language']", $(this).closest(".address"))).val();
+			var country = $("select", "div[data-purpose='country']").val();
+
+			$.getJSON(
+				"/address/candidates?countrycode=" + country + "&languagecode=" + language,
+				function(data) {
+					alert(JSON.stringify(data)); // TODO: Repopulate the form weth teh received values
+				});
+		});
 	});
 </script>
 </body>

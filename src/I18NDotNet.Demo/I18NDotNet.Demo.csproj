@@ -121,6 +121,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Models\FormModel.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -128,6 +129,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\I18NDotNet.Address.Mvc\I18NDotNet.Address.Mvc.csproj">
+      <Project>{010d3815-efeb-4702-8338-8371d8230080}</Project>
+      <Name>I18NDotNet.Address.Mvc</Name>
+    </ProjectReference>
     <ProjectReference Include="..\I18NDotNet.Address\I18NDotNet.Address.csproj">
       <Project>{96573446-a519-451e-a275-e6f15d496fbc}</Project>
       <Name>I18NDotNet.Address</Name>
@@ -137,9 +142,7 @@
       <Name>I18NDotNet.Core</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

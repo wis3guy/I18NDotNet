@@ -8,15 +8,18 @@ namespace I18N.Address
 {
 	public class AddressData : IReadOnlyDictionary<string, string>
 	{
+		public const char ListItemDelimiter = '~';
+
 		private readonly IDictionary<AddressDataContext, IReadOnlyDictionary<string, string>> _historical;
 
 		private IReadOnlyDictionary<string, string> _mostSpecific;
 
 		public AddressData()
 		{
-			var data = RegionDataConstants.Get(RegionDataConstants.DefaultCountryCode);
+			var key = new AddressDataKey(RegionDataConstants.DefaultCountryCode);
+			var data = RegionDataConstants.Get(key);
 
-			data.Add("_key", RegionDataConstants.DefaultCountryCode);
+			data.Add("_key", key.ToString());
 
 			var wrapped = new ReadOnlyDictionary<string, string>(data);
 
@@ -57,11 +60,20 @@ namespace I18N.Address
 
 			var wrapped = new ReadOnlyDictionary<string, string>(merged);
 
-			_historical.Add(key.Context, wrapped);
+			if (_historical.ContainsKey(key.Context))
+				_historical[key.Context] = wrapped;
+			else
+				_historical.Add(key.Context, wrapped);
+
 			_mostSpecific = _historical[_historical.Keys.Max()];
 		}
 
 		public IReadOnlyDictionary<string, string> this[AddressDataContext key] => _historical[key];
+
+		public bool ContainsKey(AddressDataContext key)
+		{
+			return _historical.ContainsKey(key);
+		}
 
 		public bool ContainsKey(string key)
 		{

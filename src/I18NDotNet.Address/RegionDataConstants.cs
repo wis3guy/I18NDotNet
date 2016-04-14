@@ -263,9 +263,9 @@ namespace I18N.Address
 			};
 		}
 
-		public static bool ContainsKey(string key) => Constants.ContainsKey(key);
+		public static bool ContainsCountry(string key) => Constants.ContainsKey(key);
 
-		public static IDictionary<string, string> Get(string key) => JsonConvert.DeserializeObject<Dictionary<string, string>>(Constants[key]);
+		public static IDictionary<string, string> Get(AddressDataKey key) => JsonConvert.DeserializeObject<Dictionary<string, string>>(Constants[key.ToString()]);
 		
 		public static IEnumerable<string> Keys => Constants.Keys;
 

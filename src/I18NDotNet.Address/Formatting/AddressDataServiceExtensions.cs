@@ -4,7 +4,7 @@ using I18N.Address.Validation;
 
 namespace I18N.Address.Formatting
 {
-	public static class FormattingExtensions
+	public static class AddressDataServiceExtensions
 	{
 		public static Task<string> FormatStringAsync(this AddressDataService service, IAddress model)
 		{

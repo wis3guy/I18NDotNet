@@ -28,7 +28,7 @@ namespace I18N.Address
 					case AddressFieldKey.D:
 						return new[] {DependentLocality};
 					case AddressFieldKey.C:
-						return new[] {City};
+						return new[] {Locality};
 					case AddressFieldKey.S:
 						return new[] {AdministrativeArea};
 					case AddressFieldKey.Z:
@@ -48,7 +48,7 @@ namespace I18N.Address
 		public string Name => _inner.Name;
 		public string Organisation => _inner.Organisation;
 		public string[] AddressLine => _inner.AddressLine;
-		public string City => _inner.City;
+		public string Locality => _inner.Locality;
 		public string DependentLocality => _inner.DependentLocality;
 		public string AdministrativeArea => _inner.AdministrativeArea;
 		public string PostalCode => _inner.PostalCode;

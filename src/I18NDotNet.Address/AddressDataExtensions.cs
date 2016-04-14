@@ -6,8 +6,6 @@ namespace I18N.Address
 {
 	public static class AddressDataExtensions
 	{
-		private const char ListItemDelimiter = '~';
-
 		public static bool ContainsLanguage(this AddressData data, string languageCode)
 		{
 			if (data.ContainsKey(AddressData.Properties.CurrentLanguage))
@@ -21,7 +19,7 @@ namespace I18N.Address
 			if (!data.ContainsKey(AddressData.Properties.SupportedLanguages))
 				return false;
 
-			var supported = data[AddressData.Properties.SupportedLanguages].Split(ListItemDelimiter);
+			var supported = data[AddressData.Properties.SupportedLanguages].Split(AddressData.ListItemDelimiter);
 
 			return supported.Any(x => x == languageCode);
 		}
@@ -38,7 +36,7 @@ namespace I18N.Address
 			if (!data.ContainsKey(AddressData.Properties.SubRegionKeys))
 				return null;
 
-			var keyCandidates = data[AddressData.Properties.SubRegionKeys].Split(ListItemDelimiter);
+			var keyCandidates = data[AddressData.Properties.SubRegionKeys].Split(AddressData.ListItemDelimiter);
 			var match = keyCandidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
 			
 			if (match != null)
@@ -57,7 +55,7 @@ namespace I18N.Address
 			if (!data.ContainsKey(property))
 				return null;
 
-			var textCandidates = data[property].Split(ListItemDelimiter);
+			var textCandidates = data[property].Split(AddressData.ListItemDelimiter);
 
 			for (var i = 0; i < textCandidates.Length; i++)
 			{

@@ -32,16 +32,16 @@ namespace I18N.Address.Formatting
 			var model = new Address(address);
 			var data = new AddressData();
 
-			if (RegionDataConstants.ContainsKey(model.CountryCode))
+			if (RegionDataConstants.ContainsCountry(model.CountryCode))
 			{
 				var dataKey = new AddressDataKey(model.CountryCode);
 
-				data.Refine(dataKey,RegionDataConstants.Get(dataKey.ToString()));
+				data.Refine(dataKey,RegionDataConstants.Get(dataKey));
 
 				if (data.ContainsLanguage(model.LanguageCode))
 				{
 					dataKey.SetLanguage(model.LanguageCode);
-					data.Refine(dataKey, await _service.GetAddressDataAsync(dataKey));
+					data.Refine(dataKey, await _service.GetAddressDataValuesAsync(dataKey));
 				}
 
 				var input = model.GetCleanValue(AddressFieldKey.S); // administrative area
@@ -53,7 +53,7 @@ namespace I18N.Address.Formatting
 					if (subRegionKey != null)
 					{
 						dataKey.Append(subRegionKey);
-						data.Refine(dataKey, await _service.GetAddressDataAsync(dataKey));
+						data.Refine(dataKey, await _service.GetAddressDataValuesAsync(dataKey));
 
 						input = model.GetCleanValue(AddressFieldKey.C); // locality
 
@@ -64,7 +64,7 @@ namespace I18N.Address.Formatting
 							if (subRegionKey != null)
 							{
 								dataKey.Append(subRegionKey);
-								data.Refine(dataKey, await _service.GetAddressDataAsync(dataKey));
+								data.Refine(dataKey, await _service.GetAddressDataValuesAsync(dataKey));
 
 								input = model.GetCleanValue(AddressFieldKey.D); // dependent locality
 
@@ -75,7 +75,7 @@ namespace I18N.Address.Formatting
 									if (subRegionKey != null)
 									{
 										dataKey.Append(subRegionKey);
-										data.Refine(dataKey, await _service.GetAddressDataAsync(dataKey));
+										data.Refine(dataKey, await _service.GetAddressDataValuesAsync(dataKey));
 									}
 								}
 							}

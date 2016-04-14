@@ -1,56 +1,88 @@
-﻿@model I18NDotNet.Demo.Controllers.AddressModel
-
+﻿@using I18N.Address
+@model I18NDotNet.Address.Mvc.AddressModel
+@{
+	var addressLineCount = 0;
+}
+@foreach (var field in Model.Fields)
+{
+	if (field.Field == AddressFieldKey.N)
+	{
+		<div class="row">
+			<div class="input-field col s12">
+				@Html.TextBoxFor(x => x.Name)
+				@Html.LabelFor(x => x.Name)
+			</div>
+		</div>
+	}
+	else if (field.Field == AddressFieldKey.O)
+	{
+		<div class="row">
+			<div class="input-field col s12">
+				@Html.TextBoxFor(x => x.Organisation)
+				@Html.LabelFor(x => x.Organisation)
+			</div>
+		</div>
+	}
+	else if (field.Field == AddressFieldKey.A)
+	{
+		<div class="row">
+			<div class="input-field col s12" data-purpose="administrativearea">
+				@Html.TextBoxFor(x => x.AddressLine[addressLineCount])
+				@Html.LabelFor(x => x.AddressLine[addressLineCount])
+			</div>
+		</div>
+		addressLineCount++;
+	}
+	else if (field.Field == AddressFieldKey.S)
+	{
+		<div class="row">
+			<div class="input-field col s12">
+				@(Model.SelectItems.AdministrativeArea.Any() ? Html.DropDownListFor(x => x.AdministrativeArea, Model.SelectItems.AdministrativeArea) : Html.TextBoxFor(x => x.AdministrativeArea))
+				@Html.LabelFor(x => x.AdministrativeArea)
+			</div>
+		</div>
+	}
+	else if (field.Field == AddressFieldKey.Z)
+	{
+		<div class="row">
+			<div class="input-field col s12">
+				@Html.TextBoxFor(x => x.PostalCode)
+				@Html.LabelFor(x => x.PostalCode)
+			</div>
+		</div>
+	}
+	else if (field.Field == AddressFieldKey.C)
+	{
+		<div class="row">
+			<div class="input-field col s12" data-purpose="locality">
+				@(Model.SelectItems.Locality.Any() ? Html.DropDownListFor(x => x.Locality, Model.SelectItems.Locality) : Html.TextBoxFor(x => x.Locality))
+				@Html.LabelFor(x => x.Locality)
+			</div>
+		</div>
+	}
+	else if (field.Field == AddressFieldKey.D)
+	{
+		<div class="row">
+			<div class="input-field col s12" data-purpose="dependentlocality">
+				@(Model.SelectItems.DependentLocality.Any() ? Html.DropDownListFor(x => x.DependentLocality, Model.SelectItems.DependentLocality) : Html.TextBoxFor(x => x.DependentLocality))
+				@Html.LabelFor(x => x.DependentLocality)
+			</div>
+		</div>
+	}
+	else if (field.Field == AddressFieldKey.X)
+	{
+		<div class="row">
+			<div class="input-field col s12">
+				@Html.TextBoxFor(x => x.SortingCode)
+				@Html.LabelFor(x => x.SortingCode)
+			</div>
+		</div>
+	}
+}
 <div class="row">
-	<div class="input-field col s12">
-		@Html.TextBoxFor(x => x.Name)
-		@Html.LabelFor(x => x.Name)
-	</div>
-</div>
-<div class="row">
-	<div class="input-field col s12">
-		@Html.TextBoxFor(x => x.Organisation)
-		@Html.LabelFor(x => x.Organisation)
-	</div>
-</div>
-<div class="row">
-	<div class="input-field col s12">
-		@Html.TextBoxFor(x => x.AddressLine[0])
-		@Html.LabelFor(x => x.AddressLine[0])
-	</div>
-</div>
-<div class="row">
-	<div class="input-field col s12">
-		@Html.TextBoxFor(x => x.AdministrativeArea)
-		@Html.LabelFor(x => x.AdministrativeArea)
-	</div>
-</div>
-<div class="row">
-	<div class="input-field col s12">
-		@Html.TextBoxFor(x => x.PostalCode)
-		@Html.LabelFor(x => x.PostalCode)
-	</div>
-</div>
-<div class="row">
-	<div class="input-field col s12">
-		@Html.TextBoxFor(x => x.City)
-		@Html.LabelFor(x => x.City)
-	</div>
-</div>
-<div class="row">
-	<div class="input-field col s12">
-		@Html.TextBoxFor(x => x.DependentLocality)
-		@Html.LabelFor(x => x.DependentLocality)
-	</div>
-</div>
-<div class="row">
-	<div class="input-field col s12">
-		@Html.DropDownListFor(x => x.CountryCode, Model.CountryCandidates)
+	<div class="input-field col s12" data-purpose="country">
+		@Html.DropDownListFor(x => x.CountryCode, Model.SelectItems.Country)
 		@Html.LabelFor(x => x.CountryCode)
 	</div>
 </div>
-<div class="row">
-	<div class="input-field col s12">
-		@Html.TextBoxFor(x => x.LanguageCode)
-		@Html.LabelFor(x => x.LanguageCode)
-	</div>
-</div>
+@Html.HiddenFor(x => x.LanguageCode)

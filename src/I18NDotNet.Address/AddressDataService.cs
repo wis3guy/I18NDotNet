@@ -22,7 +22,7 @@ namespace I18N.Address
 			_cache = cache;
 		}
 
-		public async Task<IDictionary<string, string>> GetAddressDataAsync(AddressDataKey builder)
+		public async Task<IDictionary<string, string>> GetAddressDataValuesAsync(AddressDataKey builder)
 		{
 			var key = builder.ToString();
 			var data = _cache.Get(key);
@@ -41,7 +41,7 @@ namespace I18N.Address
 
 		public bool SupportsCountry(string countryCode)
 		{
-			return RegionDataConstants.ContainsKey(countryCode);
+			return RegionDataConstants.ContainsCountry(countryCode);
 		}
 		
 		private class DummyAddressDataCache : IAddressDataCache

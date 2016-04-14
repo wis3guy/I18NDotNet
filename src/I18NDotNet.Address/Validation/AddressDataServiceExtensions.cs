@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace I18N.Address.Validation
 {
-	public static class ValidationExtensions
+	public static class AddressDataServiceExtensions
 	{
 		public static async Task<IAddressValidationResult> ValidateAsync(this AddressDataService service, IAddress model)
 		{

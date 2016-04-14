@@ -5,7 +5,7 @@
 		string Name { get; }
 		string Organisation { get; }
 		string[] AddressLine { get; }
-		string City { get; }
+		string Locality { get; }
 		string DependentLocality { get; }
 		string AdministrativeArea { get; }
 		string PostalCode { get; }

@@ -35,7 +35,7 @@ namespace I18N.Address.Validation
 			else
 			{
 				var dataKey = new AddressDataKey(model.CountryCode);
-				data.Refine(dataKey, RegionDataConstants.Get(dataKey.ToString()));
+				data.Refine(dataKey, RegionDataConstants.Get(dataKey));
 
 				//
 				// Language
@@ -47,7 +47,7 @@ namespace I18N.Address.Validation
 				else
 				{
 					dataKey.SetLanguage(model.LanguageCode);
-					data.Refine(dataKey, await _addressDataService.GetAddressDataAsync(dataKey));
+					data.Refine(dataKey, await _addressDataService.GetAddressDataValuesAsync(dataKey));
 				}
 
 				if (!result.Any())
@@ -65,7 +65,7 @@ namespace I18N.Address.Validation
 						else
 						{
 							dataKey.Append(subRegionKey);
-							data.Refine(dataKey, await _addressDataService.GetAddressDataAsync(dataKey));
+							data.Refine(dataKey, await _addressDataService.GetAddressDataValuesAsync(dataKey));
 
 							input = model.GetCleanValue(AddressFieldKey.C); // locality
 
@@ -80,7 +80,7 @@ namespace I18N.Address.Validation
 								else
 								{
 									dataKey.Append(subRegionKey);
-									data.Refine(dataKey, await _addressDataService.GetAddressDataAsync(dataKey));
+									data.Refine(dataKey, await _addressDataService.GetAddressDataValuesAsync(dataKey));
 
 									input = model.GetCleanValue(AddressFieldKey.D); // dependent locality
 
@@ -95,7 +95,7 @@ namespace I18N.Address.Validation
 										else
 										{
 											dataKey.Append(subRegionKey);
-											data.Refine(dataKey, await _addressDataService.GetAddressDataAsync(dataKey));
+											data.Refine(dataKey, await _addressDataService.GetAddressDataValuesAsync(dataKey));
 										}
 									}
 								}

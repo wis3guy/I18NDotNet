@@ -17,7 +17,7 @@ namespace I18NDotNet.Tests.Address
 				Name = "Geoffrey Braaf",
 				AddressLine = new []{ "Brouwersveld 65"},
 				PostalCode = "1541 PE",
-				City = "Koog aan de Zaan",
+				Locality = "Koog aan de Zaan",
 				CountryCode = region.TwoLetterISORegionName,
 				LanguageCode = culture.TwoLetterISOLanguageName
 			};
@@ -36,7 +36,7 @@ namespace I18NDotNet.Tests.Address
 		public string Name {get; set;}
 		public string Organisation {get; set;}
 		public string[] AddressLine {get; set;}
-		public string City {get; set;}
+		public string Locality {get; set;}
 		public string DependentLocality {get; set;}
 		public string AdministrativeArea {get; set;}
 		public string PostalCode {get; set;}
