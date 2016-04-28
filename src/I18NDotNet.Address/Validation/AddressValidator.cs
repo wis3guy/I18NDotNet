@@ -56,7 +56,7 @@ namespace I18N.Address.Validation
 
 					if (input != null)
 					{
-						var subRegionKey = data.GetSubRegionKeyForInputValue(model.LanguageCode, input);
+						var subRegionKey = data.GetSubRegionKeyForInputValue(model.LanguageCode, input, AddressDataContext.Country);
 
 						if (subRegionKey == null)
 						{
@@ -71,7 +71,7 @@ namespace I18N.Address.Validation
 
 							if (input != null)
 							{
-								subRegionKey = data.GetSubRegionKeyForInputValue(model.LanguageCode, input);
+								subRegionKey = data.GetSubRegionKeyForInputValue(model.LanguageCode, input, AddressDataContext.AdministrativeArea);
 
 								if (subRegionKey == null)
 								{
@@ -86,7 +86,7 @@ namespace I18N.Address.Validation
 
 									if (input != null)
 									{
-										subRegionKey = data.GetSubRegionKeyForInputValue(model.LanguageCode, input);
+										subRegionKey = data.GetSubRegionKeyForInputValue(model.LanguageCode, input, AddressDataContext.Locality);
 
 										if (subRegionKey == null)
 										{

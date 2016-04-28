@@ -24,19 +24,21 @@ namespace I18N.Address
 			return supported.Any(x => x == languageCode);
 		}
 
-		public static string GetSubRegionKeyForInputValue(this AddressData data, string languageCode, string input)
+		public static string GetSubRegionKeyForInputValue(this AddressData data, string languageCode, string input, AddressDataContext context)
 		{
 			if (data == null) throw new ArgumentNullException(nameof(data));
 			if (languageCode == null) throw new ArgumentNullException(nameof(languageCode));
-			if (input == null) throw new ArgumentNullException(nameof(input));
+
+			if (input == null)
+				return null;
 
 			var lowercase = input.ToLowerInvariant();
 			var language = new Language(languageCode);
 
-			if (!data.ContainsKey(AddressData.Properties.SubRegionKeys))
+			if (!data[context].ContainsKey(AddressData.Properties.SubRegionKeys))
 				return null;
 
-			var keyCandidates = data[AddressData.Properties.SubRegionKeys].Split(AddressData.ListItemDelimiter);
+			var keyCandidates = data[context][AddressData.Properties.SubRegionKeys].Split(AddressData.ListItemDelimiter);
 			var match = keyCandidates.SingleOrDefault(x => x.ToLowerInvariant() == lowercase);
 			
 			if (match != null)
@@ -46,16 +48,16 @@ namespace I18N.Address
 				return null; // data is in a completely different langauge, only keys could have matched ...
 
 			return language.IsForcedLatin
-				? GetSubRegionKeyForInputValue(data, keyCandidates, AddressData.Properties.SubRegionLatinNames, lowercase)
-				: GetSubRegionKeyForInputValue(data, keyCandidates, AddressData.Properties.SubRegionNames, lowercase);
+				? GetSubRegionKeyForInputValue(data, keyCandidates, AddressData.Properties.SubRegionLatinNames, lowercase, context)
+				: GetSubRegionKeyForInputValue(data, keyCandidates, AddressData.Properties.SubRegionNames, lowercase, context);
 		}
 		
-		private static string GetSubRegionKeyForInputValue(AddressData data, IReadOnlyList<string> keyCandidates, string property, string input)
+		private static string GetSubRegionKeyForInputValue(AddressData data, IReadOnlyList<string> keyCandidates, string property, string input, AddressDataContext context)
 		{
 			if (!data.ContainsKey(property))
 				return null;
 
-			var textCandidates = data[property].Split(AddressData.ListItemDelimiter);
+			var textCandidates = data[context][property].Split(AddressData.ListItemDelimiter);
 
 			for (var i = 0; i < textCandidates.Length; i++)
 			{

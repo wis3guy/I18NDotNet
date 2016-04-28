@@ -41,6 +41,12 @@ namespace I18N.Address
 			foreach (var pair in _mostSpecific)
 			{
 				var property = pair.Key;
+
+				if ((property == Properties.SubRegionKeys) ||
+					(property == Properties.SubRegionNames) ||
+					(property == Properties.SubRegionLatinNames))
+					continue; // these values are not maintained across levels ...
+
 				var value = pair.Value;
 
 				merged.Add(property, value);

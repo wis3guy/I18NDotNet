@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using I18N.Address;
@@ -10,6 +12,8 @@ namespace I18NDotNet.Address.Mvc
 {
 	public class AddressModelFactory
 	{
+		private static readonly Regex FormatFieldRegex = new Regex(@"%([A-Z])\b");
+
 		public async Task<AddressModel> CreateAsync(AddressDataService service, IAddress current)
 		{
 			if (service == null) throw new ArgumentNullException(nameof(service));
@@ -17,7 +21,7 @@ namespace I18NDotNet.Address.Mvc
 
 			var data = await service.GetAddressDataAsync(current.CountryCode, current.LanguageCode, current.AdministrativeArea, current.Locality, current.DependentLocality);
 
-			return new AddressModel
+			var model = new AddressModel
 			{
 				CountryCode = current.CountryCode,
 				LanguageCode = current.LanguageCode,
@@ -31,9 +35,27 @@ namespace I18NDotNet.Address.Mvc
 				PostalCode = current.PostalCode,
 				SortingCode = current.SortingCode,
 				
-				Fields = GetFields(data),
 				SelectItems = data.GetSelectItems()
 			};
+
+			model.Fields = GetFields(data, model.SelectItems);
+
+			if (!model.SelectItems.AdministrativeArea.Any())
+				return model;
+
+			model.AdministrativeArea = data.GetSubRegionKeyForInputValue(model.LanguageCode, model.AdministrativeArea, AddressDataContext.Country);
+
+			if (!model.SelectItems.Locality.Any())
+				return model;
+
+			model.Locality = data.GetSubRegionKeyForInputValue(model.LanguageCode, model.Locality, AddressDataContext.AdministrativeArea);
+
+			if (!model.SelectItems.DependentLocality.Any())
+				return model;
+
+			model.DependentLocality = data.GetSubRegionKeyForInputValue(model.LanguageCode, model.DependentLocality, AddressDataContext.Locality);
+
+			return model;
 		}
 
 		public async Task<AddressModel> CreateAsync(AddressDataService service, CultureInfo culture)
@@ -44,27 +66,29 @@ namespace I18NDotNet.Address.Mvc
 			var region = new RegionInfo(culture.LCID);
 			var data = await service.GetAddressDataAsync(region.TwoLetterISORegionName, culture.TwoLetterISOLanguageName);
 
-			return new AddressModel
+			var model = new AddressModel
 			{
 				CountryCode = region.TwoLetterISORegionName,
 				LanguageCode = culture.TwoLetterISOLanguageName,
 
-				Fields = GetFields(data),
 				SelectItems = data.GetSelectItems()
 			};
+
+			model.Fields = GetFields(data, model.SelectItems); // TODO: Seems broken
+
+			return model;
 		}
 
-		
-
-		private static AddressFieldModel[] GetFields(AddressData data)
+		private static AddressFieldModel[] GetFields(AddressData data, SelectItemsModel selectItems)
 		{
 			if (!data.ContainsKey(AddressData.Properties.Format))
 				return new AddressFieldModel[0];
 
 			var result = new List<AddressFieldModel>();
-			var format = data[AddressData.Properties.Format]
-				.Split(new[] {"%n", "%"}, StringSplitOptions.RemoveEmptyEntries)
-				.Select(x => x.Substring(0,1))
+
+			var format = FormatFieldRegex.Matches(data[AddressData.Properties.Format])
+				.Cast<Match>()
+				.Select(match => match.Groups[1].Value)
 				.ToArray();
 			
 			foreach (var field in format)
@@ -90,6 +114,19 @@ namespace I18NDotNet.Address.Mvc
 						fieldModel.Required = true;
 				}
 			}
+
+
+			if (selectItems.AdministrativeArea.Any() &&
+			    result.All(x => x.Field != AddressFieldKey.S))
+				result.Add(new AddressFieldModel {Field = AddressFieldKey.S});
+
+			if (selectItems.Locality.Any() &&
+				result.All(x => x.Field != AddressFieldKey.C))
+				result.Add(new AddressFieldModel { Field = AddressFieldKey.C });
+
+			if (selectItems.DependentLocality.Any() &&
+				result.All(x => x.Field != AddressFieldKey.D))
+				result.Add(new AddressFieldModel { Field = AddressFieldKey.D });
 
 			return result.ToArray();
 		}

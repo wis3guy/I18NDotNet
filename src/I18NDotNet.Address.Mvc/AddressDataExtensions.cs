@@ -38,7 +38,7 @@ namespace I18NDotNet.Address.Mvc
 			{
 				result.Add(new SelectListItem
 				{
-					Value = values[i],
+					Value = keys[i],
 					Text = values[i]
 				});
 			}

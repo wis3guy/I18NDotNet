@@ -8,8 +8,6 @@ using I18NDotNet.Demo.Models;
 
 namespace I18NDotNet.Demo.Controllers
 {
-	
-
 	public class HomeController : Controller
 	{
 		[HttpGet]

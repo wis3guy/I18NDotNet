@@ -79,7 +79,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddressController.cs" />
+    <Compile Include="I18NController.cs" />
     <Compile Include="AddressDataExtensions.cs" />
     <Compile Include="AddressDataServiceExtensions.cs" />
     <Compile Include="AddressFieldModel.cs" />
