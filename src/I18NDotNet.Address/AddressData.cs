@@ -109,6 +109,10 @@ namespace I18N.Address
 
 		public static class Properties
 		{
+			public const string AdministrativeAreaNameType = "state_name_type";
+			public const string LocalityNameType = "locality_name_type";
+			public const string DependentLocalityNameType = "sublocality_name_type";
+			public const string ZipNameType = "zip_name_type";
 			public const string Name = "name";
 			public const string SubRegionKeys = "sub_keys";
 			public const string SubRegionNames = "sub_names";
